@@ -6,7 +6,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
     <title>A Love Letter for You</title>
 
-    <!-- Google Font (Allura: romantic yet readable) -->
+    <!-- Google Font (still cursive but not too old-fashioned) -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -16,7 +16,7 @@
 
     <style>
       /* ------------------------------
-         RESET & GLOBAL
+         GLOBAL & DEFAULT STYLES
       ------------------------------ */
       * {
         box-sizing: border-box;
@@ -29,11 +29,9 @@
         justify-content: center;
         align-items: center;
         min-height: 100vh;
-        /* Prevent page scrolling; only letter can scroll */
-        overflow: hidden;
+        overflow: hidden; /* Only the letter scrolls, not the page */
         background-image: linear-gradient(45deg, #ff9a9e 0%, #fad0c4 99%, #fad0c4 100%);
       }
-
       h1 {
         text-align: center;
         font-family: Arial, Helvetica, sans-serif;
@@ -50,7 +48,7 @@
       }
 
       /* ------------------------------
-         ENVELOPE BASE
+         ENVELOPE BASE (Desktop Defaults)
          Width: 400px, Height: 330px
       ------------------------------ */
       #envelope {
@@ -67,7 +65,7 @@
         cursor: pointer;
       }
 
-      /* Zarfın üçgen kapağı (flap) */
+      /* Flap (Top Triangle) */
       .flap {
         position: absolute;
         width: 0;
@@ -79,11 +77,9 @@
         border-right: 200px solid transparent;
         border-bottom: 120px solid transparent;
         transform-origin: top;
-        /* Animasyon */
-        transition: transform 0.4s ease;
       }
 
-      /* Zarfın alt kısmı (pocket) */
+      /* Pocket (Lower part of Envelope) */
       .pocket {
         position: absolute;
         width: 0;
@@ -99,11 +95,11 @@
       }
 
       /* ------------------------------
-         LETTER (the card inside)
+         LETTER CONTAINER
       ------------------------------ */
       .letter {
         position: absolute;
-        top: 20px; /* Default position when closed */
+        top: 20px;
         left: 20px;
         width: 360px;
         height: 290px;
@@ -113,8 +109,10 @@
         box-shadow: 0 2px 26px rgba(0, 0, 0, 0.12);
         overflow: hidden;
         z-index: 2;
-        /* Animasyon */
-        transition: top 0.4s ease;
+
+        /* Help iOS handle transforms + scrolling together */
+        -webkit-transform: translate3d(0,0,0);
+        transform: translate3d(0,0,0);
       }
 
       /* Scrollable Letter Content */
@@ -124,14 +122,18 @@
         left: 10px;
         right: 10px;
         bottom: 10px;
-        overflow-y: auto; /* Basic vertical scrolling */
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+        /* Prevent "rubber band" or weird behavior at edges */
+        overscroll-behavior-y: contain;
+
         font-size: 16px;
-        font-family: 'Allura', cursive;
+        font-family: 'Great Vibes', cursive;
         color: #333;
         line-height: 1.5em;
         padding-right: 10px; /* space for scrollbar */
       }
-      /* Custom Scrollbar (for Chrome, Safari, Edge) */
+      /* Custom Scrollbar Styling (Chrome, Safari, Edge) */
       .letter-content::-webkit-scrollbar {
         width: 8px;
       }
@@ -150,18 +152,36 @@
       /* ------------------------------
          ENVELOPE STATES
       ------------------------------ */
+      /* We'll disable pointer events on the entire envelope when open,
+         so the flap/pocket won't block scrolling. Only the .letter is clickable. */
+      .open #envelope {
+        pointer-events: none;
+      }
+      /* But re-enable them on .letter so it's scrollable & clickable */
+      .open .letter {
+        pointer-events: auto;
+      }
+
       .open .flap {
         transform: rotateX(180deg);
+        transition: transform 0.4s ease, z-index 0.6s;
+        z-index: 1;
       }
       .close .flap {
         transform: rotateX(0deg);
+        transition: transform 0.4s 0.6s ease, z-index 1s;
+        z-index: 5;
       }
-
       .open .letter {
-        top: -220px; /* Moves letter up when open */
+        transform: translate3d(0, -240px, 0);
+        transition: transform 0.4s 0.6s ease, z-index 0.6s;
+        z-index: 2;
       }
       .close .letter {
-        top: 20px; /* Resets letter to original position */
+        transform: translate3d(0, 0, 0);
+        transition: transform 0.4s ease, z-index 1s;
+        z-index: 1;
+        pointer-events: none; /* Not scrollable when closed */
       }
 
       /* ------------------------------
@@ -197,7 +217,6 @@
         transform: rotate(45deg);
         transform-origin: 100% 100%;
       }
-      /* Hearts only show on open */
       .close .heart {
         opacity: 0;
         animation: none;
@@ -297,7 +316,7 @@
           height: 210px;
         }
         .open .letter {
-          top: -140px;
+          transform: translate3d(0, -170px, 0);
         }
         .hearts {
           top: 130px;
@@ -387,11 +406,11 @@
           $envelope.removeClass("open").addClass("close");
         }
 
-        // Click on the envelope to open
+        // Clicking on the envelope itself also opens it
         $envelope.click(function () {
           openEnvelope();
         });
-        // Buttons
+        // Button triggers
         $btnOpen.click(function () {
           openEnvelope();
         });
