@@ -6,13 +6,18 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
     <title>A Love Letter for You</title>
 
-    <!-- Google Font: Romantic & Legible -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Parisienne&display=swap" rel="stylesheet">
+    <!-- Google Font (Allura: romantic yet readable) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Allura&display=swap"
+      rel="stylesheet"
+    />
 
     <style>
-      /* Global Styles */
+      /* ------------------------------
+         RESET & GLOBAL
+      ------------------------------ */
       * {
         box-sizing: border-box;
         margin: 0;
@@ -24,23 +29,30 @@
         justify-content: center;
         align-items: center;
         min-height: 100vh;
-        overflow: hidden; /* Yalnızca mektup içeriği scroll eder */
+        /* Prevent page scrolling; only letter can scroll */
+        overflow: hidden;
         background-image: linear-gradient(45deg, #ff9a9e 0%, #fad0c4 99%, #fad0c4 100%);
       }
+
       h1 {
         text-align: center;
-        font-family: Arial, sans-serif;
-        color: #141414;
+        font-family: Arial, Helvetica, sans-serif;
+        color: rgb(20, 20, 20);
         font-size: 30px;
         margin-bottom: 30px;
       }
 
-      /* Envelope Wrapper */
+      /* ------------------------------
+         ENVELOPE WRAPPER
+      ------------------------------ */
       .envelope-wrapper {
         position: relative;
       }
 
-      /* Envelope Base */
+      /* ------------------------------
+         ENVELOPE BASE
+         Width: 400px, Height: 330px
+      ------------------------------ */
       #envelope {
         position: relative;
         width: 400px;
@@ -48,14 +60,14 @@
         border-bottom-left-radius: 6px;
         border-bottom-right-radius: 6px;
         background-color: #ff2a22;
-        box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
         margin: 0 auto;
       }
       #envelope:hover {
         cursor: pointer;
       }
 
-      /* Flap */
+      /* Zarfın üçgen kapağı (flap) */
       .flap {
         position: absolute;
         width: 0;
@@ -67,9 +79,11 @@
         border-right: 200px solid transparent;
         border-bottom: 120px solid transparent;
         transform-origin: top;
+        /* Animasyon */
+        transition: transform 0.4s ease;
       }
 
-      /* Pocket */
+      /* Zarfın alt kısmı (pocket) */
       .pocket {
         position: absolute;
         width: 0;
@@ -84,38 +98,40 @@
         border-bottom-right-radius: 6px;
       }
 
-      /* Letter Container */
+      /* ------------------------------
+         LETTER (the card inside)
+      ------------------------------ */
       .letter {
         position: absolute;
-        top: 20px;
+        top: 20px; /* Default position when closed */
         left: 20px;
         width: 360px;
         height: 290px;
         background: linear-gradient(145deg, #fff8f8, #ffe6e6);
         border: 2px solid #ff9a9e;
         border-radius: 10px;
-        box-shadow: 0 2px 26px rgba(0,0,0,0.12);
+        box-shadow: 0 2px 26px rgba(0, 0, 0, 0.12);
         overflow: hidden;
         z-index: 2;
-        transform: translateY(0);
-        transition: transform 0.4s ease;
+        /* Animasyon */
+        transition: top 0.4s ease;
       }
 
-      /* Scrollable Letter Content - WEBKIT özellikleri kaldırıldı */
+      /* Scrollable Letter Content */
       .letter-content {
         position: absolute;
         top: 10px;
         left: 10px;
         right: 10px;
         bottom: 10px;
-        overflow-y: scroll;
+        overflow-y: auto; /* Basic vertical scrolling */
         font-size: 16px;
-        font-family: 'Parisienne', cursive;
+        font-family: 'Allura', cursive;
         color: #333;
         line-height: 1.5em;
-        padding-right: 10px; /* scrollbar için boşluk */
+        padding-right: 10px; /* space for scrollbar */
       }
-      /* Custom Scrollbar Styling (Chrome, Safari, Edge) */
+      /* Custom Scrollbar (for Chrome, Safari, Edge) */
       .letter-content::-webkit-scrollbar {
         width: 8px;
       }
@@ -131,30 +147,26 @@
         background: #ff2a22;
       }
 
-      /* Envelope States */
+      /* ------------------------------
+         ENVELOPE STATES
+      ------------------------------ */
       .open .flap {
         transform: rotateX(180deg);
-        transition: transform 0.4s ease;
-        z-index: 1;
-        pointer-events: none;
       }
       .close .flap {
         transform: rotateX(0deg);
-        transition: transform 0.4s ease;
-        z-index: 5;
-      }
-      .open .letter {
-        transform: translateY(-240px);
-        transition: transform 0.4s ease;
-        pointer-events: auto;
-      }
-      .close .letter {
-        transform: translateY(0);
-        transition: transform 0.4s ease;
-        pointer-events: none;
       }
 
-      /* Hearts Animation (eski hali) */
+      .open .letter {
+        top: -220px; /* Moves letter up when open */
+      }
+      .close .letter {
+        top: 20px; /* Resets letter to original position */
+      }
+
+      /* ------------------------------
+         HEARTS ANIMATION
+      ------------------------------ */
       .hearts {
         position: absolute;
         top: 170px;
@@ -185,6 +197,7 @@
         transform: rotate(45deg);
         transform-origin: 100% 100%;
       }
+      /* Hearts only show on open */
       .close .heart {
         opacity: 0;
         animation: none;
@@ -213,16 +226,19 @@
         animation-fill-mode: forwards;
         animation-delay: 0.7s;
       }
+
       @keyframes slideUp {
         0% { top: 0; }
         100% { top: -600px; }
       }
       @keyframes sideSway {
-        0% { margin-left: 0; }
+        0% { margin-left: 0px; }
         100% { margin-left: 50px; }
       }
 
-      /* Buttons */
+      /* ------------------------------
+         BUTTONS
+      ------------------------------ */
       .reset {
         text-align: center;
         margin-top: 30px;
@@ -231,24 +247,28 @@
         font-weight: 800;
         transition: all 0.1s linear;
         background-color: transparent;
-        border: 2px solid #ff6863;
+        border: solid 2px #ff6863;
         border-radius: 4px;
         color: #ff6863;
+        display: inline-block;
         font-size: 14px;
         text-transform: uppercase;
         margin: 10px;
         padding: 10px;
         line-height: 2em;
+        text-decoration: none;
         min-width: 150px;
         outline: none;
-        cursor: pointer;
       }
       .reset button:hover {
         background-color: #ff6863;
+        cursor: pointer;
         color: white;
       }
 
-      /* Responsive */
+      /* ------------------------------
+         RESPONSIVE MEDIA QUERIES
+      ------------------------------ */
       @media screen and (max-width: 480px) {
         h1 {
           font-size: 24px;
@@ -277,7 +297,7 @@
           height: 210px;
         }
         .open .letter {
-          transform: translateY(-170px);
+          top: -140px;
         }
         .hearts {
           top: 130px;
@@ -299,7 +319,7 @@
         <!-- Letter -->
         <div class="letter">
           <div class="letter-content">
-            <!-- Original Letter Content -->
+            <!-- Your original text -->
             <p><strong>My Baby,</strong></p>
             <p>
               From the very moment our eyes met, my heart recognized a melody
@@ -367,10 +387,11 @@
           $envelope.removeClass("open").addClass("close");
         }
 
-        // Tıklama ile açma/kapatma
+        // Click on the envelope to open
         $envelope.click(function () {
           openEnvelope();
         });
+        // Buttons
         $btnOpen.click(function () {
           openEnvelope();
         });
