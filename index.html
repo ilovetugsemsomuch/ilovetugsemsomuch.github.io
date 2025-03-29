@@ -6,18 +6,13 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
     <title>A Love Letter for You</title>
 
-    <!-- Google Font (still cursive but not too old-fashioned) -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap"
-      rel="stylesheet"
-    />
+    <!-- Google Font: Romantic & Legible -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Parisienne&display=swap" rel="stylesheet">
 
     <style>
-      /* ------------------------------
-         GLOBAL & DEFAULT STYLES
-      ------------------------------ */
+      /* Global Styles */
       * {
         box-sizing: border-box;
         margin: 0;
@@ -29,28 +24,23 @@
         justify-content: center;
         align-items: center;
         min-height: 100vh;
-        overflow: hidden; /* Only the letter scrolls, not the page */
+        overflow: hidden; /* Yalnızca mektup içeriği scroll eder */
         background-image: linear-gradient(45deg, #ff9a9e 0%, #fad0c4 99%, #fad0c4 100%);
       }
       h1 {
         text-align: center;
-        font-family: Arial, Helvetica, sans-serif;
-        color: rgb(20, 20, 20);
+        font-family: Arial, sans-serif;
+        color: #141414;
         font-size: 30px;
         margin-bottom: 30px;
       }
 
-      /* ------------------------------
-         ENVELOPE WRAPPER
-      ------------------------------ */
+      /* Envelope Wrapper */
       .envelope-wrapper {
         position: relative;
       }
 
-      /* ------------------------------
-         ENVELOPE BASE (Desktop Defaults)
-         Width: 400px, Height: 330px
-      ------------------------------ */
+      /* Envelope Base */
       #envelope {
         position: relative;
         width: 400px;
@@ -58,14 +48,14 @@
         border-bottom-left-radius: 6px;
         border-bottom-right-radius: 6px;
         background-color: #ff2a22;
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+        box-shadow: 0 4px 20px rgba(0,0,0,0.2);
         margin: 0 auto;
       }
       #envelope:hover {
         cursor: pointer;
       }
 
-      /* Flap (Top Triangle) */
+      /* Flap */
       .flap {
         position: absolute;
         width: 0;
@@ -79,7 +69,7 @@
         transform-origin: top;
       }
 
-      /* Pocket (Lower part of Envelope) */
+      /* Pocket */
       .pocket {
         position: absolute;
         width: 0;
@@ -94,9 +84,7 @@
         border-bottom-right-radius: 6px;
       }
 
-      /* ------------------------------
-         LETTER CONTAINER
-      ------------------------------ */
+      /* Letter Container */
       .letter {
         position: absolute;
         top: 20px;
@@ -106,32 +94,26 @@
         background: linear-gradient(145deg, #fff8f8, #ffe6e6);
         border: 2px solid #ff9a9e;
         border-radius: 10px;
-        box-shadow: 0 2px 26px rgba(0, 0, 0, 0.12);
+        box-shadow: 0 2px 26px rgba(0,0,0,0.12);
         overflow: hidden;
         z-index: 2;
-
-        /* Help iOS handle transforms + scrolling together */
-        -webkit-transform: translate3d(0,0,0);
-        transform: translate3d(0,0,0);
+        transform: translateY(0);
+        transition: transform 0.4s ease;
       }
 
-      /* Scrollable Letter Content */
+      /* Scrollable Letter Content - WEBKIT özellikleri kaldırıldı */
       .letter-content {
         position: absolute;
         top: 10px;
         left: 10px;
         right: 10px;
         bottom: 10px;
-        overflow-y: auto;
-        -webkit-overflow-scrolling: touch;
-        /* Prevent "rubber band" or weird behavior at edges */
-        overscroll-behavior-y: contain;
-
+        overflow-y: scroll;
         font-size: 16px;
-        font-family: 'Great Vibes', cursive;
+        font-family: 'Parisienne', cursive;
         color: #333;
         line-height: 1.5em;
-        padding-right: 10px; /* space for scrollbar */
+        padding-right: 10px; /* scrollbar için boşluk */
       }
       /* Custom Scrollbar Styling (Chrome, Safari, Edge) */
       .letter-content::-webkit-scrollbar {
@@ -149,44 +131,30 @@
         background: #ff2a22;
       }
 
-      /* ------------------------------
-         ENVELOPE STATES
-      ------------------------------ */
-      /* We'll disable pointer events on the entire envelope when open,
-         so the flap/pocket won't block scrolling. Only the .letter is clickable. */
-      .open #envelope {
-        pointer-events: none;
-      }
-      /* But re-enable them on .letter so it's scrollable & clickable */
-      .open .letter {
-        pointer-events: auto;
-      }
-
+      /* Envelope States */
       .open .flap {
         transform: rotateX(180deg);
-        transition: transform 0.4s ease, z-index 0.6s;
+        transition: transform 0.4s ease;
         z-index: 1;
+        pointer-events: none;
       }
       .close .flap {
         transform: rotateX(0deg);
-        transition: transform 0.4s 0.6s ease, z-index 1s;
+        transition: transform 0.4s ease;
         z-index: 5;
       }
       .open .letter {
-        transform: translate3d(0, -240px, 0);
-        transition: transform 0.4s 0.6s ease, z-index 0.6s;
-        z-index: 2;
+        transform: translateY(-240px);
+        transition: transform 0.4s ease;
+        pointer-events: auto;
       }
       .close .letter {
-        transform: translate3d(0, 0, 0);
-        transition: transform 0.4s ease, z-index 1s;
-        z-index: 1;
-        pointer-events: none; /* Not scrollable when closed */
+        transform: translateY(0);
+        transition: transform 0.4s ease;
+        pointer-events: none;
       }
 
-      /* ------------------------------
-         HEARTS ANIMATION
-      ------------------------------ */
+      /* Hearts Animation (eski hali) */
       .hearts {
         position: absolute;
         top: 170px;
@@ -245,19 +213,16 @@
         animation-fill-mode: forwards;
         animation-delay: 0.7s;
       }
-
       @keyframes slideUp {
         0% { top: 0; }
         100% { top: -600px; }
       }
       @keyframes sideSway {
-        0% { margin-left: 0px; }
+        0% { margin-left: 0; }
         100% { margin-left: 50px; }
       }
 
-      /* ------------------------------
-         BUTTONS
-      ------------------------------ */
+      /* Buttons */
       .reset {
         text-align: center;
         margin-top: 30px;
@@ -266,28 +231,24 @@
         font-weight: 800;
         transition: all 0.1s linear;
         background-color: transparent;
-        border: solid 2px #ff6863;
+        border: 2px solid #ff6863;
         border-radius: 4px;
         color: #ff6863;
-        display: inline-block;
         font-size: 14px;
         text-transform: uppercase;
         margin: 10px;
         padding: 10px;
         line-height: 2em;
-        text-decoration: none;
         min-width: 150px;
         outline: none;
+        cursor: pointer;
       }
       .reset button:hover {
         background-color: #ff6863;
-        cursor: pointer;
         color: white;
       }
 
-      /* ------------------------------
-         RESPONSIVE MEDIA QUERIES
-      ------------------------------ */
+      /* Responsive */
       @media screen and (max-width: 480px) {
         h1 {
           font-size: 24px;
@@ -316,7 +277,7 @@
           height: 210px;
         }
         .open .letter {
-          transform: translate3d(0, -170px, 0);
+          transform: translateY(-170px);
         }
         .hearts {
           top: 130px;
@@ -338,7 +299,7 @@
         <!-- Letter -->
         <div class="letter">
           <div class="letter-content">
-            <!-- Your original text -->
+            <!-- Original Letter Content -->
             <p><strong>My Baby,</strong></p>
             <p>
               From the very moment our eyes met, my heart recognized a melody
@@ -406,11 +367,10 @@
           $envelope.removeClass("open").addClass("close");
         }
 
-        // Clicking on the envelope itself also opens it
+        // Tıklama ile açma/kapatma
         $envelope.click(function () {
           openEnvelope();
         });
-        // Button triggers
         $btnOpen.click(function () {
           openEnvelope();
         });
