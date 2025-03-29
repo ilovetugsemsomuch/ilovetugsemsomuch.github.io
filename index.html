@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+    <title>A Love Letter for You</title>
+
+    <!-- Google Font for a Romantic Look -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Dancing+Script&display=swap"
+      rel="stylesheet"
+    />
+
+    <style>
+      /* ------------------------------
+         GLOBAL & DEFAULT STYLES
+      ------------------------------ */
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        margin: 0;
+        padding: 0;
+        background-image: linear-gradient(45deg, #ff9a9e 0%, #fad0c4 99%, #fad0c4 100%);
+      }
+      h1 {
+        text-align: center;
+        font-family: Arial, Helvetica, sans-serif;
+        color: rgb(20, 20, 20);
+        font-size: 30px;
+        margin-bottom: 30px;
+      }
+
+      /* ------------------------------
+         ENVELOPE WRAPPER
+      ------------------------------ */
+      .envelope-wrapper {
+        position: relative;
+      }
+
+      /* ------------------------------
+         ENVELOPE BASE (Desktop Defaults)
+         Width: 400px, Height: 330px
+      ------------------------------ */
+      #envelope {
+        position: relative;
+        width: 400px;
+        height: 330px;
+        border-bottom-left-radius: 6px;
+        border-bottom-right-radius: 6px;
+        background-color: #ff2a22;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+        margin: 0 auto;
+      }
+      #envelope:hover {
+        cursor: pointer;
+      }
+
+      /* Flap (Top Triangle) */
+      .flap {
+        position: absolute;
+        width: 0;
+        height: 0;
+        z-index: 3;
+        top: 0;
+        border-top: 170px solid #ff2a22;
+        border-left: 200px solid transparent;
+        border-right: 200px solid transparent;
+        border-bottom: 120px solid transparent;
+        transform-origin: top;
+      }
+
+      /* Pocket (Lower part of Envelope) */
+      .pocket {
+        position: absolute;
+        width: 0;
+        height: 0;
+        z-index: 2;
+        top: 0;
+        border-left: 200px solid #ff748d;
+        border-right: 200px solid #ff748d;
+        border-bottom: 160px solid #ff98a7;
+        border-top: 160px solid transparent;
+        border-bottom-left-radius: 6px;
+        border-bottom-right-radius: 6px;
+      }
+
+      /* ------------------------------
+         LETTER CONTAINER
+      ------------------------------ */
+      .letter {
+        position: absolute;
+        top: 20px;
+        left: 20px;
+        width: 360px;
+        height: 290px;
+        /* Subtle gradient background and border for a prettier look */
+        background: linear-gradient(145deg, #fff8f8, #ffe6e6);
+        border: 2px solid #ff9a9e;
+        border-radius: 10px;
+        box-shadow: 0 2px 26px rgba(0, 0, 0, 0.12);
+        overflow: hidden;
+        z-index: 2;
+      }
+
+      /* Scrollable Letter Content */
+      .letter-content {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        right: 10px;
+        bottom: 10px;
+        overflow-y: auto;
+        font-size: 16px;
+        /* Romantic cursive font */
+        font-family: "Dancing Script", cursive;
+        color: #333;
+        line-height: 1.5em;
+        padding-right: 10px; /* space for scrollbar */
+      }
+      /* Custom Scrollbar Styling (Chrome, Safari, Edge) */
+      .letter-content::-webkit-scrollbar {
+        width: 8px;
+      }
+      .letter-content::-webkit-scrollbar-track {
+        background: #ffe6e6; /* match letter background */
+        border-radius: 8px;
+      }
+      .letter-content::-webkit-scrollbar-thumb {
+        background: #ff9a9e; /* pink thumb */
+        border-radius: 8px;
+      }
+      .letter-content::-webkit-scrollbar-thumb:hover {
+        background: #ff2a22;
+      }
+
+      /* ------------------------------
+         ENVELOPE STATES
+      ------------------------------ */
+      /* When OPEN, flip flap and slide letter up */
+      .open .flap {
+        transform: rotateX(180deg);
+        transition: transform 0.4s ease, z-index 0.6s;
+        z-index: 1;
+        /* Disable pointer events so we can scroll letter behind it */
+        pointer-events: none;
+      }
+      .close .flap {
+        transform: rotateX(0deg);
+        transition: transform 0.4s 0.6s ease, z-index 1s;
+        z-index: 5;
+        pointer-events: auto;
+      }
+      .open .letter {
+        transform: translateY(-240px);
+        transition: transform 0.4s 0.6s ease, z-index 0.6s;
+        z-index: 2;
+      }
+      .close .letter {
+        transform: translateY(0);
+        transition: transform 0.4s ease, z-index 1s;
+        z-index: 1;
+      }
+
+      /* ------------------------------
+         HEARTS ANIMATION
+      ------------------------------ */
+      .hearts {
+        position: absolute;
+        top: 170px;
+        left: 0;
+        right: 0;
+        z-index: 2;
+      }
+      .heart {
+        position: absolute;
+        bottom: 0;
+        right: 10%;
+      }
+      .heart:before,
+      .heart:after {
+        position: absolute;
+        content: "";
+        background: #d00000;
+        width: 50px;
+        height: 80px;
+        left: 50px;
+        top: 0;
+        border-radius: 50px 50px 0 0;
+        transform: rotate(-45deg);
+        transform-origin: 0 100%;
+      }
+      .heart:after {
+        left: 0;
+        transform: rotate(45deg);
+        transform-origin: 100% 100%;
+      }
+      .close .heart {
+        opacity: 0;
+        animation: none;
+      }
+      .a1 {
+        left: 20%;
+        transform: scale(0.6);
+        opacity: 1;
+        animation: slideUp 4s linear 1, sideSway 2s ease-in-out 4 alternate;
+        animation-fill-mode: forwards;
+        animation-delay: 0.7s;
+      }
+      .a2 {
+        left: 55%;
+        transform: scale(1);
+        opacity: 1;
+        animation: slideUp 5s linear 1, sideSway 4s ease-in-out 2 alternate;
+        animation-fill-mode: forwards;
+        animation-delay: 0.7s;
+      }
+      .a3 {
+        left: 10%;
+        transform: scale(0.8);
+        opacity: 1;
+        animation: slideUp 7s linear 1, sideSway 2s ease-in-out 6 alternate;
+        animation-fill-mode: forwards;
+        animation-delay: 0.7s;
+      }
+
+      @keyframes slideUp {
+        0% {
+          top: 0;
+        }
+        100% {
+          top: -600px;
+        }
+      }
+      @keyframes sideSway {
+        0% {
+          margin-left: 0px;
+        }
+        100% {
+          margin-left: 50px;
+        }
+      }
+
+      /* ------------------------------
+         BUTTONS
+      ------------------------------ */
+      .reset {
+        text-align: center;
+        margin-top: 30px;
+      }
+      .reset button {
+        font-weight: 800;
+        font-style: normal;
+        transition: all 0.1s linear;
+        background-color: transparent;
+        border: solid 2px #ff6863;
+        border-radius: 4px;
+        color: #ff6863;
+        display: inline-block;
+        font-size: 14px;
+        text-transform: uppercase;
+        margin: 10px;
+        padding: 10px;
+        line-height: 2em;
+        text-decoration: none;
+        min-width: 150px;
+        outline: none;
+      }
+      .reset button:hover {
+        background-color: #ff6863;
+        cursor: pointer;
+        color: white;
+      }
+
+      /* ------------------------------
+         RESPONSIVE MEDIA QUERIES
+         Scale down for screens <= 480px
+      ------------------------------ */
+      @media screen and (max-width: 480px) {
+        h1 {
+          font-size: 24px;
+          margin-bottom: 20px;
+        }
+        #envelope {
+          width: 300px;
+          height: 250px;
+        }
+        .flap {
+          /* ~75% of desktop */
+          border-top: 130px solid #ff2a22;
+          border-left: 150px solid transparent;
+          border-right: 150px solid transparent;
+          border-bottom: 90px solid transparent;
+        }
+        .pocket {
+          border-left: 150px solid #ff748d;
+          border-right: 150px solid #ff748d;
+          border-bottom: 120px solid #ff98a7;
+          border-top: 120px solid transparent;
+        }
+        .letter {
+          top: 15px;
+          left: 15px;
+          width: 270px;
+          height: 210px;
+        }
+        .open .letter {
+          transform: translateY(-170px);
+        }
+        .hearts {
+          top: 130px;
+        }
+        .heart {
+          right: 5%;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Hi love, here's a letter just for you!</h1>
+
+    <div class="envelope-wrapper">
+      <div id="envelope" class="close">
+        <div class="front flap"></div>
+        <div class="front pocket"></div>
+
+        <!-- Letter -->
+        <div class="letter">
+          <div class="letter-content">
+            <p><strong>My Baby,</strong></p>
+            <p>
+              From the very moment our eyes met, my heart recognized a melody
+              that only you could play. Every breath I take sings the song of
+              your beauty. Your smile is the radiant sunrise that banishes the
+              darkness from my days, and your eyes, sparkling like a
+              constellation of dreams, guide my soul.
+            </p>
+            <p>
+              I am in awe of you—flawless, graceful, and divine. In my eyes, you
+              are a goddess, and every moment with you fills me with
+              indescribable wonder. I cherish every laugh, every whispered
+              secret, and every heartbeat shared between us. My love for you is
+              as boundless as the stars in the night sky.
+            </p>
+            <p>
+              I dream of a future where I can call you my wife, a life woven
+              together with passion, adventure, and a promise of endless
+              devotion. I need you like the air I breathe; without you, I would
+              be lost in a world without color. The thought of losing you is a
+              fear I can hardly bear.
+            </p>
+            <p>
+              Thank you for being my inspiration, my muse, and the most
+              extraordinary part of my life. I love you with every fiber of my
+              soul and I will always love you more than everything.
+            </p>
+            <p>
+                Can I be your valentine until death seperates us?
+            </p>
+            <p>
+              Forever yours,<br />
+              <em>Erberk.</em>
+            </p>
+          </div>
+        </div>
+
+        <!-- Floating Hearts -->
+        <div class="hearts">
+          <div class="heart a1"></div>
+          <div class="heart a2"></div>
+          <div class="heart a3"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Buttons -->
+    <div class="reset">
+      <button id="open">OPEN</button>
+      <button id="reset">CLOSE</button>
+    </div>
+
+    <!-- jQuery Script -->
+    <script>
+      $(document).ready(function () {
+        var envelope = $("#envelope");
+        var btnOpen = $("#open");
+        var btnReset = $("#reset");
+
+        envelope.click(function () {
+          openEnvelope();
+        });
+        btnOpen.click(function () {
+          openEnvelope();
+        });
+        btnReset.click(function () {
+          closeEnvelope();
+        });
+
+        function openEnvelope() {
+          envelope.addClass("open").removeClass("close");
+        }
+
+        function closeEnvelope() {
+          envelope.addClass("close").removeClass("open");
+        }
+      });
+    </script>
+  </body>
+</html>
