@@ -6,11 +6,11 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
     <title>A Love Letter for You</title>
 
-    <!-- Google Font for a Valentine Theme -->
+    <!-- Google Font for a Valentine (but not too classic) style -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Satisfy&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap"
       rel="stylesheet"
     />
 
@@ -20,6 +20,8 @@
       ------------------------------ */
       * {
         box-sizing: border-box;
+        margin: 0;
+        padding: 0;
       }
       body {
         display: flex;
@@ -27,9 +29,7 @@
         justify-content: center;
         align-items: center;
         min-height: 100vh;
-        margin: 0;
-        padding: 0;
-        overflow: hidden; /* Prevent the whole page from scrolling */
+        overflow: hidden; /* Prevent page scroll; only letter scrolls */
         background-image: linear-gradient(45deg, #ff9a9e 0%, #fad0c4 99%, #fad0c4 100%);
       }
       h1 {
@@ -109,6 +109,10 @@
         box-shadow: 0 2px 26px rgba(0, 0, 0, 0.12);
         overflow: hidden;
         z-index: 2;
+
+        /* Help iOS handle transforms + scrolling */
+        -webkit-transform: translateZ(0);
+        transform: translateZ(0);
       }
 
       /* Scrollable Letter Content */
@@ -119,11 +123,11 @@
         right: 10px;
         bottom: 10px;
         overflow-y: auto;
-        -webkit-overflow-scrolling: touch;
-        font-size: 18px;
-        font-family: 'Satisfy', cursive;
+        -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
+        font-size: 16px;
+        font-family: 'Great Vibes', cursive; /* Romantic cursive */
         color: #333;
-        line-height: 1.6;
+        line-height: 1.5em;
         padding-right: 10px; /* space for scrollbar */
       }
       /* Custom Scrollbar Styling (Chrome, Safari, Edge) */
@@ -131,11 +135,11 @@
         width: 8px;
       }
       .letter-content::-webkit-scrollbar-track {
-        background: #ffe6e6;
+        background: #ffe6e6; /* match letter background */
         border-radius: 8px;
       }
       .letter-content::-webkit-scrollbar-thumb {
-        background: #ff9a9e;
+        background: #ff9a9e; /* pink thumb */
         border-radius: 8px;
       }
       .letter-content::-webkit-scrollbar-thumb:hover {
@@ -149,23 +153,24 @@
         transform: rotateX(180deg);
         transition: transform 0.4s ease, z-index 0.6s;
         z-index: 1;
-        pointer-events: none;
+        pointer-events: none; /* The flap won't block letter in open state */
       }
       .close .flap {
         transform: rotateX(0deg);
         transition: transform 0.4s 0.6s ease, z-index 1s;
         z-index: 5;
-        pointer-events: auto;
       }
       .open .letter {
         transform: translateY(-240px);
         transition: transform 0.4s 0.6s ease, z-index 0.6s;
         z-index: 2;
+        pointer-events: auto; /* Allow scrolling/click inside letter when open */
       }
       .close .letter {
         transform: translateY(0);
         transition: transform 0.4s ease, z-index 1s;
         z-index: 1;
+        pointer-events: none; /* Disable letter interaction when closed */
       }
 
       /* ------------------------------
@@ -231,12 +236,20 @@
       }
 
       @keyframes slideUp {
-        0% { top: 0; }
-        100% { top: -600px; }
+        0% {
+          top: 0;
+        }
+        100% {
+          top: -600px;
+        }
       }
       @keyframes sideSway {
-        0% { margin-left: 0px; }
-        100% { margin-left: 50px; }
+        0% {
+          margin-left: 0px;
+        }
+        100% {
+          margin-left: 50px;
+        }
       }
 
       /* ------------------------------
@@ -271,7 +284,6 @@
 
       /* ------------------------------
          RESPONSIVE MEDIA QUERIES
-         Scale down for screens <= 480px
       ------------------------------ */
       @media screen and (max-width: 480px) {
         h1 {
@@ -283,6 +295,7 @@
           height: 250px;
         }
         .flap {
+          /* ~75% of desktop */
           border-top: 130px solid #ff2a22;
           border-left: 150px solid transparent;
           border-right: 150px solid transparent;
@@ -323,24 +336,40 @@
         <!-- Letter -->
         <div class="letter">
           <div class="letter-content">
-            <p><strong>My Dearest,</strong></p>
+            <!-- Restoring your original letter text -->
+            <p><strong>My Baby,</strong></p>
             <p>
-              Since our hearts entwined, every moment has felt like a celebration of love.
-              Your smile lights up my world, and your warmth fills my soul with joy.
+              From the very moment our eyes met, my heart recognized a melody
+              that only you could play. Every breath I take sings the song of
+              your beauty. Your smile is the radiant sunrise that banishes the
+              darkness from my days, and your eyes, sparkling like a
+              constellation of dreams, guide my soul.
             </p>
             <p>
-              Each shared secret and laugh writes a beautiful story of our love,
-              and I dream of a future filled with passion, adventure, and endless devotion.
+              I am in awe of you—flawless, graceful, and divine. In my eyes, you
+              are a goddess, and every moment with you fills me with
+              indescribable wonder. I cherish every laugh, every whispered
+              secret, and every heartbeat shared between us. My love for you is
+              as boundless as the stars in the night sky.
             </p>
             <p>
-              Thank you for making life so sweet and magical.
+              I dream of a future where I can call you my wife, a life woven
+              together with passion, adventure, and a promise of endless
+              devotion. I need you like the air I breathe; without you, I would
+              be lost in a world without color. The thought of losing you is a
+              fear I can hardly bear.
             </p>
             <p>
-              Will you be my Valentine—today and always?
+              Thank you for being my inspiration, my muse, and the most
+              extraordinary part of my life. I love you with every fiber of my
+              soul and I will always love you more than everything.
+            </p>
+            <p>
+              Can I be your valentine until death separates us?
             </p>
             <p>
               Forever yours,<br />
-              <em>Erberk</em>
+              <em>Erberk.</em>
             </p>
           </div>
         </div>
@@ -363,27 +392,29 @@
     <!-- jQuery Script -->
     <script>
       $(document).ready(function () {
-        var envelope = $("#envelope");
-        var btnOpen = $("#open");
-        var btnReset = $("#reset");
-
-        envelope.click(function () {
-          openEnvelope();
-        });
-        btnOpen.click(function () {
-          openEnvelope();
-        });
-        btnReset.click(function () {
-          closeEnvelope();
-        });
+        var $envelope = $("#envelope");
+        var $btnOpen = $("#open");
+        var $btnReset = $("#reset");
 
         function openEnvelope() {
-          envelope.addClass("open").removeClass("close");
+          $envelope.addClass("open").removeClass("close");
         }
 
         function closeEnvelope() {
-          envelope.addClass("close").removeClass("open");
+          $envelope.addClass("close").removeClass("open");
         }
+
+        // Clicking on the envelope itself also opens it
+        $envelope.click(function () {
+          openEnvelope();
+        });
+        // Buttons to open/close
+        $btnOpen.click(function () {
+          openEnvelope();
+        });
+        $btnReset.click(function () {
+          closeEnvelope();
+        });
       });
     </script>
   </body>
