@@ -29,7 +29,7 @@
         justify-content: center;
         align-items: center;
         min-height: 100vh;
-        overflow: hidden; /* Only the letter scrolls, not the page */
+        overflow: hidden; /* Sadece letter scroll yapacak */
         background-image: linear-gradient(45deg, #ff9a9e 0%, #fad0c4 99%, #fad0c4 100%);
       }
       h1 {
@@ -109,10 +109,8 @@
         box-shadow: 0 2px 26px rgba(0, 0, 0, 0.12);
         overflow: hidden;
         z-index: 2;
-
-        /* Help iOS handle transforms + scrolling together */
-        -webkit-transform: translate3d(0,0,0);
-        transform: translate3d(0,0,0);
+        -webkit-transform: translate3d(0, 0, 0);
+        transform: translate3d(0, 0, 0);
       }
 
       /* Scrollable Letter Content */
@@ -122,16 +120,17 @@
         left: 10px;
         right: 10px;
         bottom: 10px;
-        overflow-y: auto;
+        /* Force scrollbar visibility */
+        overflow-y: scroll;
         -webkit-overflow-scrolling: touch;
-        /* Prevent "rubber band" or weird behavior at edges */
         overscroll-behavior-y: contain;
-
+        touch-action: pan-y;
         font-size: 16px;
         font-family: 'Great Vibes', cursive;
         color: #333;
         line-height: 1.5em;
         padding-right: 10px; /* space for scrollbar */
+        scrollbar-gutter: stable;
       }
       /* Custom Scrollbar Styling (Chrome, Safari, Edge) */
       .letter-content::-webkit-scrollbar {
@@ -146,20 +145,29 @@
         border-radius: 8px;
       }
       .letter-content::-webkit-scrollbar-thumb:hover {
-        background: #ff2a22;
+        background: #ff2a2;
       }
 
       /* ------------------------------
          ENVELOPE STATES
       ------------------------------ */
-      /* We'll disable pointer events on the entire envelope when open,
-         so the flap/pocket won't block scrolling. Only the .letter is clickable. */
-      .open #envelope {
-        pointer-events: none;
+      /* Kapatılmış durum için letter'e pointer-events kapalı bırakıldı */
+      .close .letter {
+        transform: translate3d(0, 0, 0);
+        transition: transform 0.4s ease, z-index 1s;
+        z-index: 1;
+        pointer-events: none; /* Kapalıyken scroll yapılamasın */
       }
-      /* But re-enable them on .letter so it's scrollable & clickable */
       .open .letter {
-        pointer-events: auto;
+        transform: translate3d(0, -240px, 0);
+        transition: transform 0.4s 0.6s ease, z-index 0.6s;
+        z-index: 2;
+      }
+
+      /* Zarfın açılışında yalnızca flap ve pocket'in etkileşimini kapatıyoruz */
+      .open .flap,
+      .open .pocket {
+        pointer-events: none;
       }
 
       .open .flap {
@@ -171,17 +179,6 @@
         transform: rotateX(0deg);
         transition: transform 0.4s 0.6s ease, z-index 1s;
         z-index: 5;
-      }
-      .open .letter {
-        transform: translate3d(0, -240px, 0);
-        transition: transform 0.4s 0.6s ease, z-index 0.6s;
-        z-index: 2;
-      }
-      .close .letter {
-        transform: translate3d(0, 0, 0);
-        transition: transform 0.4s ease, z-index 1s;
-        z-index: 1;
-        pointer-events: none; /* Not scrollable when closed */
       }
 
       /* ------------------------------
