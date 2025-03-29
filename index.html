@@ -6,11 +6,11 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
     <title>A Love Letter for You</title>
 
-    <!-- Google Fonts for a Romantic & Readable Look -->
+    <!-- Google Font for a Valentine Theme -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Satisfy&display=swap"
       rel="stylesheet"
     />
 
@@ -29,6 +29,7 @@
         min-height: 100vh;
         margin: 0;
         padding: 0;
+        overflow: hidden; /* Prevent the whole page from scrolling */
         background-image: linear-gradient(45deg, #ff9a9e 0%, #fad0c4 99%, #fad0c4 100%);
       }
       h1 {
@@ -102,7 +103,6 @@
         left: 20px;
         width: 360px;
         height: 290px;
-        /* Subtle gradient background and border for a prettier look */
         background: linear-gradient(145deg, #fff8f8, #ffe6e6);
         border: 2px solid #ff9a9e;
         border-radius: 10px;
@@ -118,11 +118,10 @@
         left: 10px;
         right: 10px;
         bottom: 10px;
-        overflow-y: scroll;
+        overflow-y: auto;
         -webkit-overflow-scrolling: touch;
-        touch-action: auto;
         font-size: 18px;
-        font-family: 'Playfair Display', serif;
+        font-family: 'Satisfy', cursive;
         color: #333;
         line-height: 1.6;
         padding-right: 10px; /* space for scrollbar */
@@ -132,11 +131,11 @@
         width: 8px;
       }
       .letter-content::-webkit-scrollbar-track {
-        background: #ffe6e6; /* match letter background */
+        background: #ffe6e6;
         border-radius: 8px;
       }
       .letter-content::-webkit-scrollbar-thumb {
-        background: #ff9a9e; /* pink thumb */
+        background: #ff9a9e;
         border-radius: 8px;
       }
       .letter-content::-webkit-scrollbar-thumb:hover {
@@ -146,12 +145,10 @@
       /* ------------------------------
          ENVELOPE STATES
       ------------------------------ */
-      /* When OPEN, flip flap and slide letter up */
       .open .flap {
         transform: rotateX(180deg);
         transition: transform 0.4s ease, z-index 0.6s;
         z-index: 1;
-        /* Disable pointer events so we can scroll letter behind it */
         pointer-events: none;
       }
       .close .flap {
@@ -234,20 +231,12 @@
       }
 
       @keyframes slideUp {
-        0% {
-          top: 0;
-        }
-        100% {
-          top: -600px;
-        }
+        0% { top: 0; }
+        100% { top: -600px; }
       }
       @keyframes sideSway {
-        0% {
-          margin-left: 0px;
-        }
-        100% {
-          margin-left: 50px;
-        }
+        0% { margin-left: 0px; }
+        100% { margin-left: 50px; }
       }
 
       /* ------------------------------
@@ -294,7 +283,6 @@
           height: 250px;
         }
         .flap {
-          /* ~75% of desktop */
           border-top: 130px solid #ff2a22;
           border-left: 150px solid transparent;
           border-right: 150px solid transparent;
@@ -337,22 +325,18 @@
           <div class="letter-content">
             <p><strong>My Dearest,</strong></p>
             <p>
-              From the moment our eyes met, I felt a profound change in my heart.
-              Your smile illuminates my world like the gentle glow of dawn, and your eyes reveal a kindness that soothes my soul.
+              Since our hearts entwined, every moment has felt like a celebration of love.
+              Your smile lights up my world, and your warmth fills my soul with joy.
             </p>
             <p>
-              Every laugh we share, every whispered secret, and each moment spent together fills my life with joy and hope.
-              Your love inspires me to be the best version of myself.
+              Each shared secret and laugh writes a beautiful story of our love,
+              and I dream of a future filled with passion, adventure, and endless devotion.
             </p>
             <p>
-              I dream of a future where our hearts beat as one—where passion, adventure, and unwavering devotion guide us every day.
-              Without you, my world would lose its vibrant color.
+              Thank you for making life so sweet and magical.
             </p>
             <p>
-              Thank you for being my endless source of light and love. I cherish you more with every passing day.
-            </p>
-            <p>
-              Will you be my Valentine, not just today but for all the days of our lives?
+              Will you be my Valentine—today and always?
             </p>
             <p>
               Forever yours,<br />
