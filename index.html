@@ -6,7 +6,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
     <title>A Love Letter for You</title>
 
-    <!-- Google Font for a Valentine (but not too classic) style -->
+    <!-- Google Font (still cursive but not too old-fashioned) -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -29,7 +29,7 @@
         justify-content: center;
         align-items: center;
         min-height: 100vh;
-        overflow: hidden; /* Prevent page scroll; only letter scrolls */
+        overflow: hidden; /* Only the letter scrolls, not the page */
         background-image: linear-gradient(45deg, #ff9a9e 0%, #fad0c4 99%, #fad0c4 100%);
       }
       h1 {
@@ -110,9 +110,9 @@
         overflow: hidden;
         z-index: 2;
 
-        /* Help iOS handle transforms + scrolling */
-        -webkit-transform: translateZ(0);
-        transform: translateZ(0);
+        /* Help iOS handle transforms + scrolling together */
+        -webkit-transform: translate3d(0,0,0);
+        transform: translate3d(0,0,0);
       }
 
       /* Scrollable Letter Content */
@@ -123,9 +123,12 @@
         right: 10px;
         bottom: 10px;
         overflow-y: auto;
-        -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
+        -webkit-overflow-scrolling: touch;
+        /* Prevent "rubber band" or weird behavior at edges */
+        overscroll-behavior-y: contain;
+
         font-size: 16px;
-        font-family: 'Great Vibes', cursive; /* Romantic cursive */
+        font-family: 'Great Vibes', cursive;
         color: #333;
         line-height: 1.5em;
         padding-right: 10px; /* space for scrollbar */
@@ -135,11 +138,11 @@
         width: 8px;
       }
       .letter-content::-webkit-scrollbar-track {
-        background: #ffe6e6; /* match letter background */
+        background: #ffe6e6;
         border-radius: 8px;
       }
       .letter-content::-webkit-scrollbar-thumb {
-        background: #ff9a9e; /* pink thumb */
+        background: #ff9a9e;
         border-radius: 8px;
       }
       .letter-content::-webkit-scrollbar-thumb:hover {
@@ -149,11 +152,20 @@
       /* ------------------------------
          ENVELOPE STATES
       ------------------------------ */
+      /* We'll disable pointer events on the entire envelope when open,
+         so the flap/pocket won't block scrolling. Only the .letter is clickable. */
+      .open #envelope {
+        pointer-events: none;
+      }
+      /* But re-enable them on .letter so it's scrollable & clickable */
+      .open .letter {
+        pointer-events: auto;
+      }
+
       .open .flap {
         transform: rotateX(180deg);
         transition: transform 0.4s ease, z-index 0.6s;
         z-index: 1;
-        pointer-events: none; /* The flap won't block letter in open state */
       }
       .close .flap {
         transform: rotateX(0deg);
@@ -161,16 +173,15 @@
         z-index: 5;
       }
       .open .letter {
-        transform: translateY(-240px);
+        transform: translate3d(0, -240px, 0);
         transition: transform 0.4s 0.6s ease, z-index 0.6s;
         z-index: 2;
-        pointer-events: auto; /* Allow scrolling/click inside letter when open */
       }
       .close .letter {
-        transform: translateY(0);
+        transform: translate3d(0, 0, 0);
         transition: transform 0.4s ease, z-index 1s;
         z-index: 1;
-        pointer-events: none; /* Disable letter interaction when closed */
+        pointer-events: none; /* Not scrollable when closed */
       }
 
       /* ------------------------------
@@ -236,20 +247,12 @@
       }
 
       @keyframes slideUp {
-        0% {
-          top: 0;
-        }
-        100% {
-          top: -600px;
-        }
+        0% { top: 0; }
+        100% { top: -600px; }
       }
       @keyframes sideSway {
-        0% {
-          margin-left: 0px;
-        }
-        100% {
-          margin-left: 50px;
-        }
+        0% { margin-left: 0px; }
+        100% { margin-left: 50px; }
       }
 
       /* ------------------------------
@@ -295,7 +298,6 @@
           height: 250px;
         }
         .flap {
-          /* ~75% of desktop */
           border-top: 130px solid #ff2a22;
           border-left: 150px solid transparent;
           border-right: 150px solid transparent;
@@ -314,7 +316,7 @@
           height: 210px;
         }
         .open .letter {
-          transform: translateY(-170px);
+          transform: translate3d(0, -170px, 0);
         }
         .hearts {
           top: 130px;
@@ -336,7 +338,7 @@
         <!-- Letter -->
         <div class="letter">
           <div class="letter-content">
-            <!-- Restoring your original letter text -->
+            <!-- Your original text -->
             <p><strong>My Baby,</strong></p>
             <p>
               From the very moment our eyes met, my heart recognized a melody
@@ -397,18 +399,18 @@
         var $btnReset = $("#reset");
 
         function openEnvelope() {
-          $envelope.addClass("open").removeClass("close");
+          $envelope.removeClass("close").addClass("open");
         }
 
         function closeEnvelope() {
-          $envelope.addClass("close").removeClass("open");
+          $envelope.removeClass("open").addClass("close");
         }
 
         // Clicking on the envelope itself also opens it
         $envelope.click(function () {
           openEnvelope();
         });
-        // Buttons to open/close
+        // Button triggers
         $btnOpen.click(function () {
           openEnvelope();
         });
